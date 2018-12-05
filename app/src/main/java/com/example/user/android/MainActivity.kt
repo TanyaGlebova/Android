@@ -7,7 +7,7 @@ import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityCompat
 import android.app.AlertDialog;
 import android.os.Build
 import android.support.v7.app.AppCompatActivity;
@@ -30,8 +30,20 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val versionView = findViewById<TextView>(R.id.versionView)
         val imeiView = findViewById<TextView>(R.id.imeiView)
-        versionView.text = String.format("%s: %s", R.string.version, getVersion())
-        imeiView.text = String.format("%s: %s", R.string.imei, getIMEI())
+        versionView.text = String.format("VERSION: %s", getVersion())
+        imeiView.text = String.format("IMEI: %s", getIMEI())
+    }
+
+    private fun showPermissionExplanation() {
+        val dialogBuilder = AlertDialog.Builder(this)
+        dialogBuilder.setMessage(R.string.explanation)
+        dialogBuilder.setPositiveButton(R.string.close) { dialogInterface, id ->
+            ActivityCompat.requestPermissions(this@MainActivity,
+                    arrayOf(Manifest.permission.READ_PHONE_STATE),
+                    PERMISSIONS_REQUEST_READ_PHONE_STATE)
+        }
+
+        dialogBuilder.show()
     }
 
     protected fun getVersion(): String {
