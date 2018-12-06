@@ -24,14 +24,17 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
 
     val PERMISSIONS_REQUEST_READ_PHONE_STATE = 2375
+    private var shouldShowPermissionExplanation = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val versionView = findViewById<TextView>(R.id.versionView)
         val imeiView = findViewById<TextView>(R.id.imeiView)
-        versionView.text = String.format("VERSION: %s", getVersion())
-        imeiView.text = String.format("IMEI: %s", getIMEI())
+        val versionName = resources.getString(R.string.version)
+        val imeiName = resources.getString(R.string.imei)
+        versionView.text = String.format("%s: %s", versionName, getVersion())
+        imeiView.text = String.format("%s: %s", imeiName, getIMEI())
     }
 
     private fun showPermissionExplanation() {
@@ -51,7 +54,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     @SuppressLint("HardwareIds")
-    private fun getIMEI() {
+    protected fun getIMEI(): String {
+        val telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE)) {
+                showPermissionExplanation()
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        arrayOf(Manifest.permission.READ_PHONE_STATE),
+                        PERMISSIONS_REQUEST_READ_PHONE_STATE)
+                shouldShowPermissionExplanation = true
+            }
+
+            return ""
+        } else {
+            return if (telephonyManager != null) telephonyManager.deviceId else ""
+        }
+    }
+    /*protected String getIMEI() {
         //val telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
         /*if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
@@ -74,7 +95,7 @@ class MainActivity : AppCompatActivity() {
         } else {*/
             //return if (telephonyManager != null)  @Suppress("DEPRECATION") telephonyManager.deviceId else ""
         //}
-        if (checkSelfPermission(this@MainActivity,
+        /*if (checkSelfPermission(this@MainActivity,
                         READ_PHONE_STATE) == PERMISSION_GRANTED) {
             val tel = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
             imeiView.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -83,8 +104,23 @@ class MainActivity : AppCompatActivity() {
                 @Suppress("DEPRECATION")
                 tel.deviceId
             }
+        }*/
+        val telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE)) {
+                showPermissionExplanation()
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        arrayOf(Manifest.permission.READ_PHONE_STATE),
+                        PERMISSIONS_REQUEST_READ_PHONE_STATE)
+                shouldShowPermissionExplanation = true
+            }
+            return ""
+        } else {
+            return if (telephonyManager != null) telephonyManager.deviceId else ""
         }
-    }
+    }*/
 
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -92,11 +128,13 @@ class MainActivity : AppCompatActivity() {
             PERMISSIONS_REQUEST_READ_PHONE_STATE -> {
                 val versionView = findViewById<TextView>(R.id.versionView)
                 val imeiView = findViewById<TextView>(R.id.imeiView)
+                val versionName = resources.getString(R.string.version)
+                val imeiName = resources.getString(R.string.imei)
                 if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    versionView.setText(String.format("%s: %s", R.string.version, getVersion()))
-                    imeiView.setText(String.format("%s: %s", R.string.imei, getIMEI()))
+                    versionView.setText(String.format("%s: %s", versionName, getVersion()))
+                    imeiView.setText(String.format("%s: %s", imeiName, getIMEI()))
                 } else {
-                    versionView.setText(String.format("%s: %s", R.string.version, getVersion()))
+                    versionView.setText(String.format("%s: %s", versionName, getVersion()))
                 }
             }
         }
