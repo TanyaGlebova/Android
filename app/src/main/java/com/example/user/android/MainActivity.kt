@@ -7,17 +7,17 @@ import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.support.v4.app.ActivityCompat
+import androidx.core.app.ActivityCompat
 import android.app.AlertDialog;
 import android.os.Build
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.widget.TextView;
 import com.example.user.android.BuildConfig
 import com.example.user.android.R
 import com.example.user.android.R.string.imei
-import android.support.v4.app.ActivityCompat.checkSelfPermission
+import androidx.core.app.ActivityCompat.checkSelfPermission
 import kotlinx.android.synthetic.main.activity_main.*
 
 
