@@ -1,6 +1,7 @@
 package com.example.user.android
 
 import android.content.Intent
+import android.content.Context
 import android.net.Uri
 
 import android.os.Bundle
@@ -61,7 +62,7 @@ class NavigationDrawerActivity : AppCompatActivity(), NavigationView.OnNavigatio
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_about -> {
-                startActivity(Intent(this, MainActivity::class.java))
+                startActivity(Intent(this, AboutActivity::class.java))
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -70,26 +71,28 @@ class NavigationDrawerActivity : AppCompatActivity(), NavigationView.OnNavigatio
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.nav_camera -> {
+            R.id.nav_home -> {
+                navController.navigate(R.id.mainFragment)
             }
-            R.id.nav_gallery -> {
-
+            R.id.nav_profile -> {
+                navController.navigate(R.id.profileFragment)
             }
-            R.id.nav_slideshow -> {
-
-            }
-            R.id.nav_manage -> {
-
-            }
-            R.id.nav_share -> {
-
-            }
-            R.id.nav_send -> {
+            R.id.nav_rss -> {
 
             }
         }
-
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    fun cleanArticlesCache () {
+        getSharedPreferences("data", Context.MODE_PRIVATE)
+                .edit()
+                .putString("articles", "")
+                .apply()
+    }
+
+    fun startAuthActivity() {
+
     }
 }
